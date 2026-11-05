@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "609380094687",
+    "project_id": "controlze-6403a",
+    "storage_bucket": "controlze-6403a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:609380094687:android:7572a2825fa3b407358f6a",
+        "android_client_info": {
+          "package_name": "com.grupo.controlze"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmehbOoXKDLy8LI4DxtQrjX366mi9Yk4o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

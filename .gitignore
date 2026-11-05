@@ -1,0 +1,21 @@
+cat > .gitignore <<'EOF'
+# Android Studio
+.idea/
+*.iml
+
+# Gradle
+.gradle/
+**/build/
+
+# Configuracoes locais
+local.properties
+
+# Android
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Sistema
+.DS_Store
+Thumbs.db
+EOF
