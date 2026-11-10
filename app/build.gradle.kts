@@ -58,18 +58,14 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:35.1.0"))
     implementation("com.google.firebase:firebase-firestore")
 
-// Room - banco local
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
-// Navegação entre telas
     implementation(libs.androidx.navigation.compose)
 
-// ViewModels
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
-// Firebase com coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.10.2")
 
 }
