@@ -42,5 +42,6 @@ fun ConfigScreen(
             Text("Mostrar erros durante o jogo")
         }
         Text("Controlze · versão 1.0", style = MaterialTheme.typography.bodySmall)
+        Text("Grupo: Gabriel Raatz e Matheus Pupia", style = MaterialTheme.typography.bodySmall)
     }
 }
