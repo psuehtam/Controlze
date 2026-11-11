@@ -20,7 +20,12 @@ import com.grupo.controlze.ui.game.tipos.NumeroGigante
 import com.grupo.controlze.ui.game.tipos.TocarPalavra
 
 @Composable
-fun GameScreen(vm: GameViewModel, nomeJogador: String, onVerRanking: () -> Unit) {
+fun GameScreen(
+    vm: GameViewModel,
+    nomeJogador: String,
+    mostrarErros: Boolean,
+    onVerRanking: () -> Unit
+) {
     val estado = vm.uiState
     val fase = estado.faseAtual
 
@@ -51,7 +56,7 @@ fun GameScreen(vm: GameViewModel, nomeJogador: String, onVerRanking: () -> Unit)
                     "Fase ${estado.indiceAtual + 1} de ${estado.partida.size}",
                     style = MaterialTheme.typography.titleMedium
                 )
-                Text("Erros: ${estado.erros}")
+                if (mostrarErros) Text("Erros: ${estado.erros}")
             }
             Spacer(Modifier.height(24.dp))
             when (fase.tipo) {

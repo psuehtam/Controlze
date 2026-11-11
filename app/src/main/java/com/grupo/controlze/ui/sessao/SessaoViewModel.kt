@@ -20,4 +20,8 @@ class SessaoViewModel : ViewModel() {
     fun sairDoPainel() {
         uiState = uiState.copy(isAdmin = false)
     }
+
+    fun mudarMostrarErros(mostrar: Boolean) {
+        uiState = uiState.copy(mostrarErros = mostrar)
+    }
 }

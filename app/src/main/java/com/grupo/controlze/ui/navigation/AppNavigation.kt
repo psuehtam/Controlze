@@ -26,6 +26,7 @@ import com.grupo.controlze.ui.AppViewModelFactory
 import com.grupo.controlze.ui.admin.AdminViewModel
 import com.grupo.controlze.ui.admin.EditarFaseScreen
 import com.grupo.controlze.ui.admin.PainelScreen
+import com.grupo.controlze.ui.config.ConfigScreen
 import com.grupo.controlze.ui.game.GameScreen
 import com.grupo.controlze.ui.game.GameViewModel
 import com.grupo.controlze.ui.inicio.InicioScreen
@@ -90,11 +91,19 @@ fun AppNavigation() {
                 GameScreen(
                     vm = gameVm,
                     nomeJogador = sessao.nomeJogador.trim(),
+                    mostrarErros = sessao.mostrarErros,
                     onVerRanking = { navController.navigate(Rotas.RANKING) }
                 )
             }
             composable(Rotas.RANKING) { RankingScreen(rankingVm) }
-            composable(Rotas.CONFIG) { TelaProvisoria("Configurações") }
+            composable(Rotas.CONFIG) {
+                ConfigScreen(
+                    nome = sessao.nomeJogador,
+                    mostrarErros = sessao.mostrarErros,
+                    onNomeChange = sessaoVm::definirNome,
+                    onMostrarErrosChange = sessaoVm::mudarMostrarErros
+                )
+            }
             composable(Rotas.PAINEL) {
                 if (sessao.isAdmin) {
                     PainelScreen(
