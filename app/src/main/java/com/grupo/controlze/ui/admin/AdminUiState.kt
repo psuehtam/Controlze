@@ -8,6 +8,7 @@ data class AdminUiState(
     val formulario: Formulario = Formulario(),
     val edicaoBloqueada: Boolean = false,
     val salvando: Boolean = false,
+    val confirmarExclusao: Fase? = null,
     val mensagem: String? = null
 )
 

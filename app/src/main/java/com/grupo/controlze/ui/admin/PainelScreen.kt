@@ -56,9 +56,24 @@ fun PainelScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(estado.itens, key = { item -> item.fase.id }) { item ->
-                    LinhaFase(item = item, onEditar = { onEditar(item.fase.id) })
+                    LinhaFase(
+                        item = item,
+                        mostrarSetas = estado.filtro == FiltroPainel.TODAS,
+                        onSubir = { vm.mover(item.fase, paraCima = true) },
+                        onDescer = { vm.mover(item.fase, paraCima = false) },
+                        onEditar = { onEditar(item.fase.id) },
+                        onExcluir = { vm.pedirExclusao(item.fase) }
+                    )
                 }
             }
         }
+    }
+
+    estado.confirmarExclusao?.let { fase ->
+        JanelaExcluirFase(
+            pergunta = fase.pergunta,
+            onConfirmar = vm::excluirConfirmada,
+            onCancelar = { vm.pedirExclusao(null) }
+        )
     }
 }

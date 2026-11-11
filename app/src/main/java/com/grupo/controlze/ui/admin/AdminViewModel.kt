@@ -9,6 +9,7 @@ import com.grupo.controlze.data.repository.FaseRepository
 import com.grupo.controlze.logic.Fase
 import com.grupo.controlze.logic.TipoFase
 import com.grupo.controlze.logic.erroNaFaseCriada
+import com.grupo.controlze.logic.ordemAoMover
 import com.grupo.controlze.logic.ordemParaNovaFase
 import kotlinx.coroutines.launch
 
@@ -21,7 +22,7 @@ class AdminViewModel(private val repository: FaseRepository) : ViewModel() {
     init {
         viewModelScope.launch {
             repository.fases.collect { fases ->
-                todas = fases
+                todas = fases.sortedBy { it.ordem }
                 atualizarLista()
             }
         }
@@ -123,6 +124,66 @@ class AdminViewModel(private val repository: FaseRepository) : ViewModel() {
                 uiState = uiState.copy(formulario = Formulario())
                 aoTerminar()
             }
+        }
+    }
+
+    fun mover(fase: Fase, paraCima: Boolean) {
+        val faseAtual = todas.find { it.id == fase.id }
+        if (faseAtual == null) {
+            uiState = uiState.copy(mensagem = "Fase não encontrada.")
+            return
+        }
+        if (faseAtual.original || faseAtual.id.startsWith("original-")) {
+            uiState = uiState.copy(mensagem = "Fases originais não podem ser movidas.")
+            return
+        }
+
+        val indice = todas.indexOfFirst { it.id == faseAtual.id }
+        val novaOrdem = ordemAoMover(todas, indice, paraCima)
+        if (novaOrdem == null) {
+            uiState = uiState.copy(mensagem = "Essa fase não pode ir para lá.")
+            return
+        }
+
+        viewModelScope.launch {
+            val erro = repository.salvarCriada(faseAtual.copy(ordem = novaOrdem))
+            uiState = uiState.copy(mensagem = erro ?: "Fase movida.")
+        }
+    }
+
+    fun pedirExclusao(fase: Fase?) {
+        if (fase == null) {
+            uiState = uiState.copy(confirmarExclusao = null)
+            return
+        }
+        val faseAtual = todas.find { it.id == fase.id }
+        if (faseAtual == null) {
+            uiState = uiState.copy(mensagem = "Fase não encontrada.")
+            return
+        }
+        if (faseAtual.original || faseAtual.id.startsWith("original-")) {
+            uiState = uiState.copy(mensagem = "Fases originais não podem ser excluídas.")
+            return
+        }
+        uiState = uiState.copy(confirmarExclusao = faseAtual)
+    }
+
+    fun excluirConfirmada() {
+        val selecionada = uiState.confirmarExclusao ?: return
+        uiState = uiState.copy(confirmarExclusao = null)
+        val faseAtual = todas.find { it.id == selecionada.id }
+        if (faseAtual == null) {
+            uiState = uiState.copy(mensagem = "Fase não encontrada.")
+            return
+        }
+        if (faseAtual.original || faseAtual.id.startsWith("original-")) {
+            uiState = uiState.copy(mensagem = "Fases originais não podem ser excluídas.")
+            return
+        }
+
+        viewModelScope.launch {
+            val erro = repository.excluirCriada(faseAtual)
+            uiState = uiState.copy(mensagem = erro ?: "Fase excluída.")
         }
     }
 

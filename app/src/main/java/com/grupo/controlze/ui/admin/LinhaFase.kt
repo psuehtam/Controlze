@@ -5,7 +5,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -18,7 +21,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LinhaFase(item: ItemPainel, onEditar: () -> Unit) {
+fun LinhaFase(
+    item: ItemPainel,
+    mostrarSetas: Boolean,
+    onSubir: () -> Unit,
+    onDescer: () -> Unit,
+    onEditar: () -> Unit,
+    onExcluir: () -> Unit
+) {
     Card(Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.padding(12.dp),
@@ -34,8 +44,19 @@ fun LinhaFase(item: ItemPainel, onEditar: () -> Unit) {
             if (item.fase.original) {
                 Icon(Icons.Default.Lock, contentDescription = "Fase original bloqueada")
             } else {
+                if (mostrarSetas) {
+                    IconButton(onClick = onSubir) {
+                        Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Subir fase")
+                    }
+                    IconButton(onClick = onDescer) {
+                        Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Descer fase")
+                    }
+                }
                 IconButton(onClick = onEditar) {
                     Icon(Icons.Default.Edit, contentDescription = "Editar fase criada")
+                }
+                IconButton(onClick = onExcluir) {
+                    Icon(Icons.Default.Delete, contentDescription = "Excluir fase criada")
                 }
             }
         }
