@@ -5,4 +5,5 @@ object Rotas {
     const val JOGO = "jogo"
     const val RANKING = "ranking"
     const val CONFIG = "config"
+    const val PAINEL = "painel"
 }

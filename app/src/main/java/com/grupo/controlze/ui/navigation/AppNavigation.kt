@@ -23,6 +23,8 @@ import com.grupo.controlze.data.remote.FaseRemoteDataSource
 import com.grupo.controlze.data.repository.FaseRepository
 import com.grupo.controlze.data.repository.RankingRepository
 import com.grupo.controlze.ui.AppViewModelFactory
+import com.grupo.controlze.ui.admin.AdminViewModel
+import com.grupo.controlze.ui.admin.PainelScreen
 import com.grupo.controlze.ui.game.GameScreen
 import com.grupo.controlze.ui.game.GameViewModel
 import com.grupo.controlze.ui.inicio.InicioScreen
@@ -45,6 +47,7 @@ fun AppNavigation() {
     val sessaoVm: SessaoViewModel = viewModel()
     val gameVm: GameViewModel = viewModel(factory = factory)
     val rankingVm: RankingViewModel = viewModel(factory = factory)
+    val adminVm: AdminViewModel = viewModel(factory = factory)
     val sessao = sessaoVm.uiState
     val entrada by navController.currentBackStackEntryAsState()
     val rotaAtual = entrada?.destination?.route
@@ -62,7 +65,7 @@ fun AppNavigation() {
         },
         bottomBar = {
             if (rotaAtual != null && rotaAtual != Rotas.INICIO) {
-                BottomBar(navController, rotaAtual)
+                BottomBar(navController, rotaAtual, sessao.isAdmin)
             }
         }
     ) { padding ->
@@ -75,7 +78,11 @@ fun AppNavigation() {
                 InicioScreen(
                     nome = sessao.nomeJogador,
                     onNomeChange = sessaoVm::definirNome,
-                    onJogar = { navController.navigate(Rotas.JOGO) }
+                    onJogar = { navController.navigate(Rotas.JOGO) },
+                    onAbrirPainel = {
+                        sessaoVm.entrarNoPainel()
+                        navController.navigate(Rotas.PAINEL)
+                    }
                 )
             }
             composable(Rotas.JOGO) {
@@ -87,6 +94,21 @@ fun AppNavigation() {
             }
             composable(Rotas.RANKING) { RankingScreen(rankingVm) }
             composable(Rotas.CONFIG) { TelaProvisoria("Configurações") }
+            composable(Rotas.PAINEL) {
+                if (sessao.isAdmin) {
+                    PainelScreen(
+                        vm = adminVm,
+                        onSair = {
+                            sessaoVm.sairDoPainel()
+                            navController.navigate(Rotas.INICIO) {
+                                popUpTo(Rotas.INICIO) { inclusive = true }
+                            }
+                        }
+                    )
+                } else {
+                    TelaProvisoria("Entre pelo botão Painel de fases da tela inicial")
+                }
+            }
         }
     }
 }

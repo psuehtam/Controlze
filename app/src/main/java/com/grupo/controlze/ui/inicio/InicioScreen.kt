@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,7 +22,8 @@ import androidx.compose.ui.unit.dp
 fun InicioScreen(
     nome: String,
     onNomeChange: (String) -> Unit,
-    onJogar: () -> Unit
+    onJogar: () -> Unit,
+    onAbrirPainel: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize().padding(24.dp),
@@ -46,11 +48,15 @@ fun InicioScreen(
         ) {
             Text("Jogar")
         }
+        Spacer(Modifier.height(8.dp))
+        OutlinedButton(onClick = onAbrirPainel, modifier = Modifier.fillMaxWidth()) {
+            Text("Painel de fases")
+        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun InicioScreenPreview() {
-    InicioScreen(nome = "Ana", onNomeChange = {}, onJogar = {})
+    InicioScreen(nome = "Ana", onNomeChange = {}, onJogar = {}, onAbrirPainel = {})
 }

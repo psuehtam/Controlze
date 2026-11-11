@@ -1,6 +1,7 @@
 package com.grupo.controlze.ui.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
@@ -12,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 
 @Composable
-fun BottomBar(navController: NavHostController, rotaAtual: String?) {
+fun BottomBar(navController: NavHostController, rotaAtual: String?, isAdmin: Boolean) {
     NavigationBar {
         NavigationBarItem(
             selected = rotaAtual == Rotas.JOGO,
@@ -32,6 +33,14 @@ fun BottomBar(navController: NavHostController, rotaAtual: String?) {
             icon = { Icon(Icons.Default.Settings, contentDescription = null) },
             label = { Text("Config") }
         )
+        if (isAdmin) {
+            NavigationBarItem(
+                selected = rotaAtual == Rotas.PAINEL,
+                onClick = { irPara(navController, Rotas.PAINEL) },
+                icon = { Icon(Icons.Default.Edit, contentDescription = null) },
+                label = { Text("Painel") }
+            )
+        }
     }
 }
 

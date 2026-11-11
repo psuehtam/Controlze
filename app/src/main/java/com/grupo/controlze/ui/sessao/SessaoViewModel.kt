@@ -12,4 +12,12 @@ class SessaoViewModel : ViewModel() {
     fun definirNome(nome: String) {
         uiState = uiState.copy(nomeJogador = nome)
     }
+
+    fun entrarNoPainel() {
+        uiState = uiState.copy(isAdmin = true)
+    }
+
+    fun sairDoPainel() {
+        uiState = uiState.copy(isAdmin = false)
+    }
 }
