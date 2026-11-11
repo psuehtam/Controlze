@@ -5,6 +5,9 @@ import com.grupo.controlze.logic.Fase
 data class AdminUiState(
     val itens: List<ItemPainel> = emptyList(),
     val filtro: FiltroPainel = FiltroPainel.TODAS,
+    val formulario: Formulario = Formulario(),
+    val edicaoBloqueada: Boolean = false,
+    val salvando: Boolean = false,
     val mensagem: String? = null
 )
 

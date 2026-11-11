@@ -6,4 +6,8 @@ object Rotas {
     const val RANKING = "ranking"
     const val CONFIG = "config"
     const val PAINEL = "painel"
+    const val NOVA = "nova"
+    const val EDITAR = "editar/{id}"
+
+    fun editar(id: String): String = "editar/$id"
 }

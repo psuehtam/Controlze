@@ -18,7 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PainelScreen(vm: AdminViewModel, onSair: () -> Unit) {
+fun PainelScreen(
+    vm: AdminViewModel,
+    onNovaFase: () -> Unit,
+    onEditar: (String) -> Unit,
+    onSair: () -> Unit
+) {
     val estado = vm.uiState
 
     Column(
@@ -34,6 +39,9 @@ fun PainelScreen(vm: AdminViewModel, onSair: () -> Unit) {
             TextButton(onClick = onSair) { Text("Sair") }
         }
         FiltrosPainel(filtro = estado.filtro, onMudar = vm::mudarFiltro)
+        Button(onClick = onNovaFase, modifier = Modifier.fillMaxWidth()) {
+            Text("+ Nova fase")
+        }
         if (estado.itens.isEmpty() && estado.filtro == FiltroPainel.TODAS) {
             Button(onClick = vm::carregarOriginais) { Text("Carregar fases originais") }
         }
@@ -48,7 +56,7 @@ fun PainelScreen(vm: AdminViewModel, onSair: () -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(estado.itens, key = { item -> item.fase.id }) { item ->
-                    LinhaFase(item)
+                    LinhaFase(item = item, onEditar = { onEditar(item.fase.id) })
                 }
             }
         }

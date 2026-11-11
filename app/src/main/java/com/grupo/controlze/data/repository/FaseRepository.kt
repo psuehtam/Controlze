@@ -54,6 +54,19 @@ class FaseRepository(
         }
     }
 
+    suspend fun salvarCriada(fase: Fase): String? {
+        if (fase.original || fase.id.startsWith("original-")) {
+            return "Fases originais não podem ser alteradas."
+        }
+        return try {
+            remote.salvar(fase)
+            dao.salvar(fase.paraEntity())
+            null
+        } catch (e: Exception) {
+            "Erro ao salvar a fase: ${e.message}"
+        }
+    }
+
     private suspend fun salvarOriginaisRemotas(idsRemotos: List<String>) {
         for (id in idsRemotos) {
             if (id.startsWith("original-") && id !in originaisPorId) remote.excluir(id)

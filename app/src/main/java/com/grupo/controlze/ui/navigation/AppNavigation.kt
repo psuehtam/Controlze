@@ -24,6 +24,7 @@ import com.grupo.controlze.data.repository.FaseRepository
 import com.grupo.controlze.data.repository.RankingRepository
 import com.grupo.controlze.ui.AppViewModelFactory
 import com.grupo.controlze.ui.admin.AdminViewModel
+import com.grupo.controlze.ui.admin.EditarFaseScreen
 import com.grupo.controlze.ui.admin.PainelScreen
 import com.grupo.controlze.ui.game.GameScreen
 import com.grupo.controlze.ui.game.GameViewModel
@@ -98,12 +99,26 @@ fun AppNavigation() {
                 if (sessao.isAdmin) {
                     PainelScreen(
                         vm = adminVm,
+                        onNovaFase = { navController.navigate(Rotas.editar(Rotas.NOVA)) },
+                        onEditar = { id -> navController.navigate(Rotas.editar(id)) },
                         onSair = {
                             sessaoVm.sairDoPainel()
                             navController.navigate(Rotas.INICIO) {
                                 popUpTo(Rotas.INICIO) { inclusive = true }
                             }
                         }
+                    )
+                } else {
+                    TelaProvisoria("Entre pelo botão Painel de fases da tela inicial")
+                }
+            }
+            composable(Rotas.EDITAR) { entradaDaRota ->
+                val id = entradaDaRota.arguments?.getString("id") ?: Rotas.NOVA
+                if (sessao.isAdmin) {
+                    EditarFaseScreen(
+                        vm = adminVm,
+                        id = id,
+                        onVoltar = { navController.popBackStack() }
                     )
                 } else {
                     TelaProvisoria("Entre pelo botão Painel de fases da tela inicial")
