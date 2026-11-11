@@ -1,0 +1,60 @@
+package com.grupo.controlze.ui.game
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.grupo.controlze.logic.TipoFase
+import com.grupo.controlze.ui.game.tipos.MultiplaEscolha
+
+@Composable
+fun GameScreen(vm: GameViewModel, nomeJogador: String, onVerRanking: () -> Unit) {
+    val estado = vm.uiState
+    val fase = estado.faseAtual
+
+    Column(Modifier.fillMaxSize().padding(16.dp)) {
+        estado.mensagem?.let { mensagem ->
+            Text(mensagem, color = MaterialTheme.colorScheme.error)
+            Spacer(Modifier.height(8.dp))
+        }
+        if (estado.carregando) {
+            Text("Carregando...")
+        } else if (estado.venceu) {
+            TelaVitoria(
+                segundos = estado.tempoFinalSegundos,
+                erros = estado.erros,
+                onJogarDeNovo = { vm.iniciar(nomeJogador) },
+                onVerRanking = onVerRanking
+            )
+        } else if (!estado.emAndamento || fase == null) {
+            TelaAntesDeComecar(
+                nome = nomeJogador,
+                totalFases = estado.fasesDisponiveis.size,
+                onComecar = { vm.iniciar(nomeJogador) },
+                onCarregarOriginais = { vm.carregarOriginais() }
+            )
+        } else {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text(
+                    "Fase ${estado.indiceAtual + 1} de ${estado.partida.size}",
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text("Erros: ${estado.erros}")
+            }
+            Spacer(Modifier.height(24.dp))
+            when (fase.tipo) {
+                TipoFase.MULTIPLA_ESCOLHA -> MultiplaEscolha(fase) { vm.escolheu(it) }
+                else -> Text("Este tipo de fase entra na etapa 7.")
+            }
+        }
+    }
+}

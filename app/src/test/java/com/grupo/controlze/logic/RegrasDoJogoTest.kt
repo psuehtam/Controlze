@@ -8,22 +8,22 @@ import org.junit.Test
 class RegrasDoJogoTest {
     @Test
     fun respostaCertaAcerta() {
-        assertTrue(escolhaCerta(FASES_ORIGINAIS[0], "Pikachu"))
+        assertTrue(escolhaCerta(FASES_ORIGINAIS[0], "Machoke"))
     }
 
     @Test
     fun respostaErradaErra() {
-        assertFalse(escolhaCerta(FASES_ORIGINAIS[0], "Raichu"))
+        assertFalse(escolhaCerta(FASES_ORIGINAIS[0], "Machop"))
     }
 
     @Test
-    fun botaoDaFase30Erra() {
-        assertFalse(escolhaCerta(FASES_ORIGINAIS[29], "SAIR"))
+    fun botaoDaFaseFinalErra() {
+        assertFalse(escolhaCerta(FASES_ORIGINAIS[9], "SAIR"))
     }
 
     @Test
     fun apenasNomeCorretoDoProfessorAcerta() {
-        val fase = FASES_ORIGINAIS[8]
+        val fase = FASES_ORIGINAIS[3]
         assertEquals(4, fase.alternativas.distinct().size)
         assertTrue(escolhaCerta(fase, NOME_PROFESSOR))
         fase.alternativas.filter { it != NOME_PROFESSOR }.forEach {
@@ -32,9 +32,9 @@ class RegrasDoJogoTest {
     }
 
     @Test
-    fun saoTrintaFasesSemErro() {
-        assertEquals(30, FASES_ORIGINAIS.size)
-        assertEquals((1..30).map { "original-" + it.toString().padStart(2, '0') },
+    fun saoDezFasesSemErro() {
+        assertEquals(10, FASES_ORIGINAIS.size)
+        assertEquals((1..10).map { "original-" + it.toString().padStart(2, '0') },
             FASES_ORIGINAIS.map { it.id })
         assertTrue(FASES_ORIGINAIS.all { it.original })
         assertTrue(problemasDasOriginais().isEmpty())

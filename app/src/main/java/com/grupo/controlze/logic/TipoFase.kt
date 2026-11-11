@@ -4,6 +4,5 @@ enum class TipoFase {
     MULTIPLA_ESCOLHA,
     TOCAR_PALAVRA,
     ESPERAR,
-    NUMERO_GIGANTE,
-    BOTAO_FOGE
+    NUMERO_GIGANTE
 }
