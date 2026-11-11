@@ -9,6 +9,7 @@ import com.grupo.controlze.data.local.RankingEntity
 import com.grupo.controlze.data.repository.FaseRepository
 import com.grupo.controlze.data.repository.RankingRepository
 import com.grupo.controlze.logic.escolhaCerta
+import com.grupo.controlze.logic.palavraCerta
 import kotlinx.coroutines.launch
 
 class GameViewModel(
@@ -59,6 +60,12 @@ class GameViewModel(
         val fase = uiState.faseAtual ?: return
         if (!uiState.emAndamento) return
         if (escolhaCerta(fase, texto)) acertou() else errou()
+    }
+
+    fun tocouPalavra(palavra: String) {
+        val fase = uiState.faseAtual ?: return
+        if (!uiState.emAndamento) return
+        if (palavraCerta(fase, palavra)) acertou() else errou()
     }
 
     private fun acertou() {

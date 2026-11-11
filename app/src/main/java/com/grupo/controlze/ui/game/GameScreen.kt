@@ -15,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.grupo.controlze.logic.TipoFase
 import com.grupo.controlze.ui.game.tipos.MultiplaEscolha
+import com.grupo.controlze.ui.game.tipos.NumeroGigante
+import com.grupo.controlze.ui.game.tipos.TocarPalavra
 
 @Composable
 fun GameScreen(vm: GameViewModel, nomeJogador: String, onVerRanking: () -> Unit) {
@@ -53,6 +55,12 @@ fun GameScreen(vm: GameViewModel, nomeJogador: String, onVerRanking: () -> Unit)
             Spacer(Modifier.height(24.dp))
             when (fase.tipo) {
                 TipoFase.MULTIPLA_ESCOLHA -> MultiplaEscolha(fase) { vm.escolheu(it) }
+                TipoFase.TOCAR_PALAVRA -> TocarPalavra(
+                    fase = fase,
+                    onTocarPalavra = vm::tocouPalavra,
+                    onEscolher = vm::escolheu
+                )
+                TipoFase.NUMERO_GIGANTE -> NumeroGigante(fase, vm::escolheu)
                 else -> Text("Este tipo de fase entra na etapa 7.")
             }
         }

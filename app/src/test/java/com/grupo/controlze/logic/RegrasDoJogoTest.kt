@@ -22,6 +22,19 @@ class RegrasDoJogoTest {
     }
 
     @Test
+    fun palavraCertaIgnoraMaiusculasEPontuacao() {
+        assertEquals("venceu", normalizar("Venceu!"))
+        assertTrue(palavraCerta(FASES_ORIGINAIS[9], "venceu!"))
+        assertFalse(palavraCerta(FASES_ORIGINAIS[9], "SAIR"))
+    }
+
+    @Test
+    fun pegadinhasMantemAlvosCorretos() {
+        assertTrue(palavraCerta(FASES_ORIGINAIS[2], "certa"))
+        assertTrue(escolhaCerta(FASES_ORIGINAIS[6], "3"))
+    }
+
+    @Test
     fun apenasNomeCorretoDoProfessorAcerta() {
         val fase = FASES_ORIGINAIS[3]
         assertEquals(4, fase.alternativas.distinct().size)
