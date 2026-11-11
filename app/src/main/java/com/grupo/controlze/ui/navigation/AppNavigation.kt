@@ -26,6 +26,8 @@ import com.grupo.controlze.ui.AppViewModelFactory
 import com.grupo.controlze.ui.game.GameScreen
 import com.grupo.controlze.ui.game.GameViewModel
 import com.grupo.controlze.ui.inicio.InicioScreen
+import com.grupo.controlze.ui.ranking.RankingScreen
+import com.grupo.controlze.ui.ranking.RankingViewModel
 import com.grupo.controlze.ui.sessao.SessaoViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,6 +44,7 @@ fun AppNavigation() {
     }
     val sessaoVm: SessaoViewModel = viewModel()
     val gameVm: GameViewModel = viewModel(factory = factory)
+    val rankingVm: RankingViewModel = viewModel(factory = factory)
     val sessao = sessaoVm.uiState
     val entrada by navController.currentBackStackEntryAsState()
     val rotaAtual = entrada?.destination?.route
@@ -82,7 +85,7 @@ fun AppNavigation() {
                     onVerRanking = { navController.navigate(Rotas.RANKING) }
                 )
             }
-            composable(Rotas.RANKING) { TelaProvisoria("Ranking") }
+            composable(Rotas.RANKING) { RankingScreen(rankingVm) }
             composable(Rotas.CONFIG) { TelaProvisoria("Configurações") }
         }
     }

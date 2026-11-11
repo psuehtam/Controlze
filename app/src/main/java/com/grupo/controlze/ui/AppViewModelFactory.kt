@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.grupo.controlze.data.repository.FaseRepository
 import com.grupo.controlze.data.repository.RankingRepository
 import com.grupo.controlze.ui.game.GameViewModel
+import com.grupo.controlze.ui.ranking.RankingViewModel
 
 class AppViewModelFactory(
     private val faseRepository: FaseRepository,
@@ -14,6 +15,9 @@ class AppViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(GameViewModel::class.java)) {
             return GameViewModel(faseRepository, rankingRepository) as T
+        }
+        if (modelClass.isAssignableFrom(RankingViewModel::class.java)) {
+            return RankingViewModel(rankingRepository) as T
         }
         throw IllegalArgumentException("ViewModel desconhecido: ${modelClass.name}")
     }
