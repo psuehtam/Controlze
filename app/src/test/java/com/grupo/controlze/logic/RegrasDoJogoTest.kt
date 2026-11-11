@@ -32,6 +32,7 @@ class RegrasDoJogoTest {
     fun pegadinhasMantemAlvosCorretos() {
         assertTrue(palavraCerta(FASES_ORIGINAIS[2], "certa"))
         assertTrue(escolhaCerta(FASES_ORIGINAIS[6], "3"))
+        assertEquals(TipoFase.ESPERAR, FASES_ORIGINAIS[4].tipo)
     }
 
     @Test

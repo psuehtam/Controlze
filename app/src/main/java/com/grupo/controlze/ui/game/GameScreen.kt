@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.grupo.controlze.logic.TipoFase
+import com.grupo.controlze.ui.game.tipos.Esperar
 import com.grupo.controlze.ui.game.tipos.MultiplaEscolha
 import com.grupo.controlze.ui.game.tipos.NumeroGigante
 import com.grupo.controlze.ui.game.tipos.TocarPalavra
@@ -61,7 +62,11 @@ fun GameScreen(vm: GameViewModel, nomeJogador: String, onVerRanking: () -> Unit)
                     onEscolher = vm::escolheu
                 )
                 TipoFase.NUMERO_GIGANTE -> NumeroGigante(fase, vm::escolheu)
-                else -> Text("Este tipo de fase entra na etapa 7.")
+                TipoFase.ESPERAR -> Esperar(
+                    fase = fase,
+                    segundos = estado.segundosEspera,
+                    onTocar = vm::tocouDuranteEspera
+                )
             }
         }
     }

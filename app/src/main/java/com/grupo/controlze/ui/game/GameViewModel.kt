@@ -8,8 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.grupo.controlze.data.local.RankingEntity
 import com.grupo.controlze.data.repository.FaseRepository
 import com.grupo.controlze.data.repository.RankingRepository
+import com.grupo.controlze.logic.TipoFase
 import com.grupo.controlze.logic.escolhaCerta
 import com.grupo.controlze.logic.palavraCerta
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class GameViewModel(
@@ -19,6 +22,7 @@ class GameViewModel(
     var uiState by mutableStateOf(GameUiState())
         private set
     private var nomeJogador = "Jogador"
+    private var contagem: Job? = null
 
     init {
         viewModelScope.launch {
@@ -43,6 +47,8 @@ class GameViewModel(
     }
 
     fun iniciar(nome: String) {
+        contagem?.cancel()
+        contagem = null
         nomeJogador = nome.trim().ifBlank { "Jogador" }
         uiState = uiState.copy(
             partida = uiState.fasesDisponiveis,
@@ -52,8 +58,10 @@ class GameViewModel(
             inicioMillis = System.currentTimeMillis(),
             venceu = false,
             tempoFinalSegundos = 0L,
-            mensagem = null
+            mensagem = null,
+            segundosEspera = 0
         )
+        prepararFase()
     }
 
     fun escolheu(texto: String) {
@@ -74,24 +82,63 @@ class GameViewModel(
         if (estado.indiceAtual == estado.partida.lastIndex) {
             vencer(estado)
         } else {
-            uiState = uiState.copy(indiceAtual = uiState.indiceAtual + 1, mensagem = null)
+            uiState = uiState.copy(
+                indiceAtual = uiState.indiceAtual + 1,
+                mensagem = null,
+                segundosEspera = 0
+            )
+            prepararFase()
         }
     }
 
     private fun errou() {
+        if (!uiState.emAndamento) return
+        contagem?.cancel()
+        contagem = null
         uiState = uiState.copy(
             indiceAtual = 0,
             erros = uiState.erros + 1,
-            mensagem = "Errou! Volta pro começo."
+            mensagem = "Errou! Volta pro começo.",
+            segundosEspera = 0
         )
+        prepararFase()
+    }
+
+    private fun prepararFase() {
+        contagem?.cancel()
+        contagem = null
+        val fase = uiState.faseAtual ?: return
+        if (!uiState.emAndamento || fase.tipo != TipoFase.ESPERAR) return
+
+        contagem = viewModelScope.launch {
+            for (segundos in 5 downTo 1) {
+                if (!uiState.emAndamento || uiState.faseAtual?.id != fase.id) return@launch
+                uiState = uiState.copy(segundosEspera = segundos)
+                delay(1_000)
+            }
+            if (uiState.emAndamento && uiState.faseAtual?.id == fase.id) {
+                contagem = null
+                uiState = uiState.copy(segundosEspera = 0)
+                acertou()
+            }
+        }
+    }
+
+    fun tocouDuranteEspera() {
+        val fase = uiState.faseAtual ?: return
+        if (!uiState.emAndamento || fase.tipo != TipoFase.ESPERAR) return
+        errou()
     }
 
     private fun vencer(estado: GameUiState) {
+        contagem?.cancel()
+        contagem = null
         val segundos = (System.currentTimeMillis() - estado.inicioMillis) / 1000
         uiState = uiState.copy(
             emAndamento = false,
             venceu = true,
-            tempoFinalSegundos = segundos
+            tempoFinalSegundos = segundos,
+            segundosEspera = 0
         )
         viewModelScope.launch {
             val erro = rankingRepository.inserir(
@@ -104,5 +151,10 @@ class GameViewModel(
             )
             if (erro != null) uiState = uiState.copy(mensagem = erro)
         }
+    }
+
+    override fun onCleared() {
+        contagem?.cancel()
+        super.onCleared()
     }
 }

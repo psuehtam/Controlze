@@ -12,7 +12,8 @@ data class GameUiState(
     val venceu: Boolean = false,
     val tempoFinalSegundos: Long = 0L,
     val mensagem: String? = null,
-    val carregando: Boolean = true
+    val carregando: Boolean = true,
+    val segundosEspera: Int = 0
 ) {
     val faseAtual: Fase? get() = partida.getOrNull(indiceAtual)
 }
