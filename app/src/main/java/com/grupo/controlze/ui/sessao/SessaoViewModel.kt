@@ -1,16 +1,15 @@
 package com.grupo.controlze.ui.sessao
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 
 class SessaoViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(SessaoUiState())
-    val uiState: StateFlow<SessaoUiState> = _uiState.asStateFlow()
+    var uiState by mutableStateOf(SessaoUiState())
+        private set
 
     fun definirNome(nome: String) {
-        _uiState.update { it.copy(nomeJogador = nome) }
+        uiState = uiState.copy(nomeJogador = nome)
     }
 }

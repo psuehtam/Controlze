@@ -13,18 +13,29 @@ class FaseRepository(
     private val dao: FaseDao,
     private val remote: FaseRemoteDataSource
 ) {
+    private val originaisPorId = FASES_ORIGINAIS.associateBy { it.id }
+
     val fases: Flow<List<Fase>> = dao.observarTodas().map { lista ->
-        lista.map { it.paraFase() }
+        lista.mapNotNull { it.paraFase() }
     }
 
     suspend fun sincronizar(): String? {
         return try {
-            val remotas = remote.buscarTodas()
+            atualizarOriginaisLocais()
+            val idsRemotos = remote.buscarIds()
+            var remotas = remote.buscarTodas()
+            if (idsRemotos.any { it.startsWith("original-") } &&
+                (idsRemotos.any { it.startsWith("original-") && it !in originaisPorId } ||
+                    FASES_ORIGINAIS.any { original -> remotas.find { it.id == original.id } != original })
+            ) {
+                salvarOriginaisRemotas(idsRemotos)
+                remotas = remote.buscarTodas()
+            }
             if (remotas.isNotEmpty()) {
                 dao.salvarTodas(remotas.map { it.paraEntity() })
-                val idsRemotos = remotas.mapTo(mutableSetOf()) { it.id }
+                val idsAtuais = remotas.mapTo(mutableSetOf()) { it.id }
                 for (local in dao.listarTodas()) {
-                    if (local.id !in idsRemotos) dao.excluir(local)
+                    if (local.id !in idsAtuais) dao.excluir(local)
                 }
             }
             null
@@ -35,13 +46,30 @@ class FaseRepository(
 
     suspend fun carregarOriginais(): String? {
         return try {
-            for (fase in FASES_ORIGINAIS) {
-                remote.salvar(fase)
-            }
-            dao.salvarTodas(FASES_ORIGINAIS.map { it.paraEntity() })
+            salvarOriginaisRemotas(remote.buscarIds())
+            atualizarOriginaisLocais(forcar = true)
             null
         } catch (e: Exception) {
             "Não foi possível carregar as fases: ${e.message}"
+        }
+    }
+
+    private suspend fun salvarOriginaisRemotas(idsRemotos: List<String>) {
+        for (id in idsRemotos) {
+            if (id.startsWith("original-") && id !in originaisPorId) remote.excluir(id)
+        }
+        for (fase in FASES_ORIGINAIS) remote.salvar(fase)
+    }
+
+    private suspend fun atualizarOriginaisLocais(forcar: Boolean = false) {
+        val locais = dao.listarTodas()
+        if (!forcar && locais.none { it.original || it.id.startsWith("original-") }) return
+        val atuais = FASES_ORIGINAIS.map { it.paraEntity() }
+        if (forcar || atuais.any { atual -> locais.find { it.id == atual.id } != atual }) {
+            dao.salvarTodas(atuais)
+        }
+        for (local in locais) {
+            if (local.id.startsWith("original-") && local.id !in originaisPorId) dao.excluir(local)
         }
     }
 }

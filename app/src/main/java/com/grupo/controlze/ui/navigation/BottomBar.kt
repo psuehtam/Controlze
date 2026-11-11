@@ -17,19 +17,19 @@ fun BottomBar(navController: NavHostController, rotaAtual: String?) {
         NavigationBarItem(
             selected = rotaAtual == Rotas.JOGO,
             onClick = { irPara(navController, Rotas.JOGO) },
-            icon = { Icon(Icons.Filled.PlayArrow, contentDescription = null) },
+            icon = { Icon(Icons.Default.PlayArrow, contentDescription = null) },
             label = { Text("Jogar") }
         )
         NavigationBarItem(
             selected = rotaAtual == Rotas.RANKING,
             onClick = { irPara(navController, Rotas.RANKING) },
-            icon = { Icon(Icons.Filled.Star, contentDescription = null) },
+            icon = { Icon(Icons.Default.Star, contentDescription = null) },
             label = { Text("Ranking") }
         )
         NavigationBarItem(
             selected = rotaAtual == Rotas.CONFIG,
             onClick = { irPara(navController, Rotas.CONFIG) },
-            icon = { Icon(Icons.Filled.Settings, contentDescription = null) },
+            icon = { Icon(Icons.Default.Settings, contentDescription = null) },
             label = { Text("Config") }
         )
     }

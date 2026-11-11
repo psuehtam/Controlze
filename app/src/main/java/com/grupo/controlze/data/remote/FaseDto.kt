@@ -15,18 +15,21 @@ data class FaseDto(
     var original: Boolean = false
 )
 
-fun FaseDto.paraFase(id: String): Fase = Fase(
+fun FaseDto.paraFase(id: String): Fase? {
+    val tipoFase = TipoFase.entries.find { it.name == tipo } ?: return null
+    return Fase(
     id = id,
     ordem = ordem,
     categoria = categoria,
-    tipo = TipoFase.valueOf(tipo),
+    tipo = tipoFase,
     pergunta = pergunta,
     codigo = codigo,
     alternativas = alternativas,
     resposta = resposta,
     alvo = alvo,
     original = original
-)
+    )
+}
 
 fun Fase.paraDto(): FaseDto = FaseDto(
     ordem = ordem,

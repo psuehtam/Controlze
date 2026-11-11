@@ -14,7 +14,15 @@ class FaseRemoteDataSource(firestore: FirebaseFirestore) {
         }
     }
 
+    suspend fun buscarIds(): List<String> {
+        return colecao.get().await().documents.map { it.id }
+    }
+
     suspend fun salvar(fase: Fase) {
         colecao.document(fase.id).set(fase.paraDto()).await()
+    }
+
+    suspend fun excluir(id: String) {
+        colecao.document(id).delete().await()
     }
 }

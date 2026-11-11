@@ -19,11 +19,13 @@ fun Fase.paraEntity(): FaseEntity = FaseEntity(
     original = original
 )
 
-fun FaseEntity.paraFase(): Fase = Fase(
+fun FaseEntity.paraFase(): Fase? {
+    val tipoFase = TipoFase.entries.find { it.name == tipo } ?: return null
+    return Fase(
     id = id,
     ordem = ordem,
     categoria = categoria,
-    tipo = TipoFase.valueOf(tipo),
+    tipo = tipoFase,
     pergunta = pergunta,
     codigo = codigo,
     alternativas = listOf(alternativa1, alternativa2, alternativa3, alternativa4)
@@ -31,4 +33,5 @@ fun FaseEntity.paraFase(): Fase = Fase(
     resposta = resposta,
     alvo = alvo,
     original = original
-)
+    )
+}
