@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun RankingScreen(vm: RankingViewModel) {
+fun RankingScreen(vm: RankingViewModel, podeGerenciar: Boolean) {
     val estado = vm.uiState
 
     Column(
@@ -60,51 +60,56 @@ fun RankingScreen(vm: RankingViewModel) {
                     LinhaRanking(
                         posicao = indice + 1,
                         item = item,
+                        podeGerenciar = podeGerenciar,
                         onEditar = { vm.abrirEdicao(item) },
                         onExcluir = { vm.pedirExclusao(item) }
                     )
                 }
             }
-            TextButton(onClick = { vm.pedirApagarTudo(true) }) {
-                Text("Apagar todo o ranking")
+            if (podeGerenciar) {
+                TextButton(onClick = { vm.pedirApagarTudo(true) }) {
+                    Text("Apagar todo o ranking")
+                }
             }
         }
     }
 
-    estado.editando?.let {
-        JanelaEditarNome(
-            nome = estado.nomeEditado,
-            onNomeChange = vm::mudarNomeEditado,
-            onSalvar = vm::salvarNome,
-            onCancelar = vm::fecharEdicao
-        )
-    }
+    if (podeGerenciar) {
+        estado.editando?.let {
+            JanelaEditarNome(
+                nome = estado.nomeEditado,
+                onNomeChange = vm::mudarNomeEditado,
+                onSalvar = vm::salvarNome,
+                onCancelar = vm::fecharEdicao
+            )
+        }
 
-    estado.confirmarExclusao?.let { item ->
-        AlertDialog(
-            onDismissRequest = { vm.pedirExclusao(null) },
-            title = { Text("Excluir ${item.nomeJogador}?") },
-            text = { Text("Esse resultado será removido do ranking.") },
-            confirmButton = {
-                TextButton(onClick = vm::excluirConfirmado) { Text("Excluir") }
-            },
-            dismissButton = {
-                TextButton(onClick = { vm.pedirExclusao(null) }) { Text("Cancelar") }
-            }
-        )
-    }
+        estado.confirmarExclusao?.let { item ->
+            AlertDialog(
+                onDismissRequest = { vm.pedirExclusao(null) },
+                title = { Text("Excluir ${item.nomeJogador}?") },
+                text = { Text("Esse resultado será removido do ranking.") },
+                confirmButton = {
+                    TextButton(onClick = vm::excluirConfirmado) { Text("Excluir") }
+                },
+                dismissButton = {
+                    TextButton(onClick = { vm.pedirExclusao(null) }) { Text("Cancelar") }
+                }
+            )
+        }
 
-    if (estado.confirmarApagarTudo) {
-        AlertDialog(
-            onDismissRequest = { vm.pedirApagarTudo(false) },
-            title = { Text("Apagar todo o ranking?") },
-            text = { Text("Todos os resultados serão removidos.") },
-            confirmButton = {
-                TextButton(onClick = vm::apagarTudo) { Text("Apagar") }
-            },
-            dismissButton = {
-                TextButton(onClick = { vm.pedirApagarTudo(false) }) { Text("Cancelar") }
-            }
-        )
+        if (estado.confirmarApagarTudo) {
+            AlertDialog(
+                onDismissRequest = { vm.pedirApagarTudo(false) },
+                title = { Text("Apagar todo o ranking?") },
+                text = { Text("Todos os resultados serão removidos.") },
+                confirmButton = {
+                    TextButton(onClick = vm::apagarTudo) { Text("Apagar") }
+                },
+                dismissButton = {
+                    TextButton(onClick = { vm.pedirApagarTudo(false) }) { Text("Cancelar") }
+                }
+            )
+        }
     }
 }

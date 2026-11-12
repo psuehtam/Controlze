@@ -101,7 +101,9 @@ fun AppNavigation() {
                     }
                 )
             }
-            composable(Rotas.RANKING) { RankingScreen(rankingVm) }
+            composable(Rotas.RANKING) {
+                RankingScreen(rankingVm, podeGerenciar = sessao.isAdmin)
+            }
             composable(Rotas.CONFIG) {
                 ConfigScreen(
                     nome = sessao.nomeJogador,

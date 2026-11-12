@@ -22,6 +22,7 @@ import com.grupo.controlze.data.local.RankingEntity
 fun LinhaRanking(
     posicao: Int,
     item: RankingEntity,
+    podeGerenciar: Boolean,
     onEditar: () -> Unit,
     onExcluir: () -> Unit
 ) {
@@ -36,11 +37,13 @@ fun LinhaRanking(
                     "${item.totalFases} fases · ${item.erros} erros · ${formatarTempo(item.tempoSegundos)}"
                 )
             }
-            IconButton(onClick = onEditar) {
-                Icon(Icons.Default.Edit, contentDescription = "Editar nome")
-            }
-            IconButton(onClick = onExcluir) {
-                Icon(Icons.Default.Delete, contentDescription = "Excluir resultado")
+            if (podeGerenciar) {
+                IconButton(onClick = onEditar) {
+                    Icon(Icons.Default.Edit, contentDescription = "Editar nome")
+                }
+                IconButton(onClick = onExcluir) {
+                    Icon(Icons.Default.Delete, contentDescription = "Excluir resultado")
+                }
             }
         }
     }
