@@ -92,7 +92,13 @@ fun AppNavigation() {
                     vm = gameVm,
                     nomeJogador = sessao.nomeJogador.trim(),
                     mostrarErros = sessao.mostrarErros,
-                    onVerRanking = { navController.navigate(Rotas.RANKING) }
+                    onVerRanking = { navController.navigate(Rotas.RANKING) },
+                    onSair = {
+                        sessaoVm.sairDoPainel()
+                        navController.navigate(Rotas.INICIO) {
+                            popUpTo(Rotas.INICIO) { inclusive = true }
+                        }
+                    }
                 )
             }
             composable(Rotas.RANKING) { RankingScreen(rankingVm) }

@@ -24,7 +24,8 @@ fun GameScreen(
     vm: GameViewModel,
     nomeJogador: String,
     mostrarErros: Boolean,
-    onVerRanking: () -> Unit
+    onVerRanking: () -> Unit,
+    onSair: () -> Unit
 ) {
     val estado = vm.uiState
     val fase = estado.faseAtual
@@ -48,7 +49,8 @@ fun GameScreen(
                 nome = nomeJogador,
                 totalFases = estado.fasesDisponiveis.size,
                 onComecar = { vm.iniciar(nomeJogador) },
-                onCarregarOriginais = { vm.carregarOriginais() }
+                onCarregarOriginais = { vm.carregarOriginais() },
+                onSair = onSair
             )
         } else {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
