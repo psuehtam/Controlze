@@ -1,7 +1,6 @@
 package com.grupo.controlze.ui.ranking
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,52 +22,61 @@ import androidx.compose.ui.unit.dp
 fun RankingScreen(vm: RankingViewModel, podeGerenciar: Boolean) {
     val estado = vm.uiState
 
-    Column(
+    LazyColumn(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Text("Ranking", style = MaterialTheme.typography.headlineMedium)
-        OutlinedTextField(
-            value = estado.busca,
-            onValueChange = vm::buscar,
-            label = { Text("Buscar por nome") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Text("Ordenar por", style = MaterialTheme.typography.labelLarge)
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(OrdenacaoRanking.entries) { ordenacao ->
-                FilterChip(
-                    selected = estado.ordenacao == ordenacao,
-                    onClick = { vm.selecionarOrdenacao(ordenacao) },
-                    label = { Text(ordenacao.rotulo) }
-                )
-            }
+        item {
+            Text("Ranking", style = MaterialTheme.typography.headlineMedium)
         }
-        estado.mensagem?.let { mensagem ->
-            Text(mensagem, color = MaterialTheme.colorScheme.error)
+        item {
+            OutlinedTextField(
+                value = estado.busca,
+                onValueChange = vm::buscar,
+                label = { Text("Buscar por nome") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
-
-        if (estado.itens.isEmpty()) {
-            Text(if (estado.busca.isBlank()) "Ninguém venceu ainda." else "Nenhum resultado encontrado.")
-        } else {
-            LazyColumn(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                itemsIndexed(estado.itens, key = { _, item -> item.id }) { indice, item ->
-                    LinhaRanking(
-                        posicao = indice + 1,
-                        item = item,
-                        podeGerenciar = podeGerenciar,
-                        onEditar = { vm.abrirEdicao(item) },
-                        onExcluir = { vm.pedirExclusao(item) }
+        item {
+            Text("Ordenar por", style = MaterialTheme.typography.labelLarge)
+        }
+        item {
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(OrdenacaoRanking.entries) { ordenacao ->
+                    FilterChip(
+                        selected = estado.ordenacao == ordenacao,
+                        onClick = { vm.selecionarOrdenacao(ordenacao) },
+                        label = { Text(ordenacao.rotulo) }
                     )
                 }
             }
+        }
+        estado.mensagem?.let { mensagem ->
+            item {
+                Text(mensagem, color = MaterialTheme.colorScheme.error)
+            }
+        }
+
+        if (estado.itens.isEmpty()) {
+            item {
+                Text(if (estado.busca.isBlank()) "Ninguém venceu ainda." else "Nenhum resultado encontrado.")
+            }
+        } else {
+            itemsIndexed(estado.itens, key = { _, item -> item.id }) { indice, item ->
+                LinhaRanking(
+                    posicao = indice + 1,
+                    item = item,
+                    podeGerenciar = podeGerenciar,
+                    onEditar = { vm.abrirEdicao(item) },
+                    onExcluir = { vm.pedirExclusao(item) }
+                )
+            }
             if (podeGerenciar) {
-                TextButton(onClick = { vm.pedirApagarTudo(true) }) {
-                    Text("Apagar todo o ranking")
+                item {
+                    TextButton(onClick = { vm.pedirApagarTudo(true) }) {
+                        Text("Apagar todo o ranking")
+                    }
                 }
             }
         }

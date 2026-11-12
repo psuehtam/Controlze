@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.grupo.controlze.ui.componentes.ColunaRolavel
 
 @Composable
 fun InicioScreen(
@@ -25,11 +26,10 @@ fun InicioScreen(
     onJogar: () -> Unit,
     onAbrirPainel: () -> Unit
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize().padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    ColunaRolavel(
+        modifier = Modifier.padding(24.dp)
+    )
+    {
         Text("Controlze", style = MaterialTheme.typography.displayMedium)
         Text("Errou? Volta pro começo.")
         Spacer(Modifier.height(32.dp))

@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,7 +44,8 @@ fun GameScreen(
                 segundos = estado.tempoFinalSegundos,
                 erros = estado.erros,
                 onJogarDeNovo = { vm.iniciar(nomeJogador) },
-                onVerRanking = onVerRanking
+                onVerRanking = onVerRanking,
+                onSair = onSair
             )
         } else if (!estado.emAndamento || fase == null) {
             TelaAntesDeComecar(
@@ -53,27 +56,32 @@ fun GameScreen(
                 onSair = onSair
             )
         } else {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(
-                    "Fase ${estado.indiceAtual + 1} de ${estado.partida.size}",
-                    style = MaterialTheme.typography.titleMedium
-                )
-                if (mostrarErros) Text("Erros: ${estado.erros}")
-            }
-            Spacer(Modifier.height(24.dp))
-            when (fase.tipo) {
-                TipoFase.MULTIPLA_ESCOLHA -> MultiplaEscolha(fase) { vm.escolheu(it) }
-                TipoFase.TOCAR_PALAVRA -> TocarPalavra(
-                    fase = fase,
-                    onTocarPalavra = vm::tocouPalavra,
-                    onEscolher = vm::escolheu
-                )
-                TipoFase.NUMERO_GIGANTE -> NumeroGigante(fase, vm::escolheu)
-                TipoFase.ESPERAR -> Esperar(
-                    fase = fase,
-                    segundos = estado.segundosEspera,
-                    onTocar = vm::tocouDuranteEspera
-                )
+            val rolagem = if (fase.tipo == TipoFase.ESPERAR) Modifier
+            else Modifier.verticalScroll(rememberScrollState())
+
+            Column(Modifier.fillMaxWidth().weight(1f).then(rolagem)) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(
+                        "Fase ${estado.indiceAtual + 1} de ${estado.partida.size}",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    if (mostrarErros) Text("Erros: ${estado.erros}")
+                }
+                Spacer(Modifier.height(24.dp))
+                when (fase.tipo) {
+                    TipoFase.MULTIPLA_ESCOLHA -> MultiplaEscolha(fase) { vm.escolheu(it) }
+                    TipoFase.TOCAR_PALAVRA -> TocarPalavra(
+                        fase = fase,
+                        onTocarPalavra = vm::tocouPalavra,
+                        onEscolher = vm::escolheu
+                    )
+                    TipoFase.NUMERO_GIGANTE -> NumeroGigante(fase, vm::escolheu)
+                    TipoFase.ESPERAR -> Esperar(
+                        fase = fase,
+                        segundos = estado.segundosEspera,
+                        onTocar = vm::tocouDuranteEspera
+                    )
+                }
             }
         }
     }
